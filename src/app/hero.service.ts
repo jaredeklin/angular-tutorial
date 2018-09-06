@@ -4,6 +4,7 @@ import { Hero } from "./hero";
 import { Observable, of } from "rxjs";
 import { MessageService } from "./message.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError, map, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -16,16 +17,19 @@ export class HeroService {
     private http: HttpClient,
     private messageService: MessageService) { }
   
-  getHero(id: number): Observable<Hero> {
-    // todo: send the message after fetching the hero
-    this.messageService.add(`HeroService: fetched hero id=${id}`);
-    return of(HEROES.find(hero => hero.id === id))
-  };
+  // getHero(id: number): Observable<Hero> {
+  //   // todo: send the message after fetching the hero
+  //   this.messageService.add(`HeroService: fetched hero id=${id}`);
+  //   return of(HEROES.find(hero => hero.id === id))
+  // };
 
   getHeroes(): Observable<Hero[]> {
     // TODO: send the message after fetching the heroes
     // this.messageService.add('HeroService: fetched heroes')
-    return this.http.get<Hero[]>(this.heroesUrl);
+    return this.http.get<Hero[]>(this.heroesUrl)
+      .pipe(
+        catchError(this.handleError('getHeroes', []))
+      )
   }
 
   
