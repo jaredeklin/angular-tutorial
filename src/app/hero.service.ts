@@ -17,11 +17,13 @@ export class HeroService {
     private http: HttpClient,
     private messageService: MessageService) { }
   
-  // getHero(id: number): Observable<Hero> {
-  //   // todo: send the message after fetching the hero
-  //   this.messageService.add(`HeroService: fetched hero id=${id}`);
-  //   return of(HEROES.find(hero => hero.id === id))
-  // };
+  getHero(id: number): Observable<Hero> {
+    const url = `${this.heroesUrl}/${id}`;
+    return this.http.get<Hero>(url).pipe(
+      tap(_ => this.log(`fetched hero id=${id}`)),
+      catchError(this.handleError<Hero>(`getHero id=${id}`))
+    );
+  }
 
   getHeroes(): Observable<Hero[]> {
     // TODO: send the message after fetching the heroes
